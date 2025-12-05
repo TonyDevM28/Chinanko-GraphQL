@@ -9,11 +9,12 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 
-# Copiamos el JAR generado en la etapa anterior
-COPY --from=build /app/target/*.jar app.jar
+# CORRECCIÓN IMPORTANTE: Tu proyecto genera un WAR, no un JAR.
+# Copiamos cualquier archivo .war generado y lo renombramos a app.war
+COPY --from=build /app/target/*.war app.war
 
 # Exponemos el puerto (informativo para Render)
 EXPOSE 8080
 
-# Comando de inicio
-ENTRYPOINT ["java","-jar","app.jar"]
+# Comando de inicio (Spring Boot puede ejecutar wars con java -jar)
+ENTRYPOINT ["java","-jar","app.war"]
